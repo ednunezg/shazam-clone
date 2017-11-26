@@ -32,11 +32,11 @@ int main()
         cout << output[i] << endl;
     }
 
-    /* STEP 4: For each 4kb chunk of data in the audio int array, get a list of all frequencies and magnitudes */
+    /* STEP 3: For each 4kb chunk of data in the audio int array, get a list of all frequencies and magnitudes */
 
             //Use multipleAudioChunksToFFT function here
     
-    /* STEP 5: Make a file containing the most prominent frequencies in a range */
+    /* STEP 4: Make a file containing the most prominent frequencies in a range */
 
         //We will write to a file where each line will contain the most prominent frequency in "ranges[]"
         //In this example, our goal is to find the most prominent frequency between 40-80 Hz, 80-120 Hz, .. 180-300 Hz
@@ -46,11 +46,11 @@ int main()
 
         //Use getAllHighestFrequencySets here
 
-    /* STEP 6: Using the file containing the most prominent frequencies in the range, we compute hashes for each line and try to find a matching song from a DATABASE*/
+    /* STEP 5: Using the file containing the most prominent frequencies in the range, we compute hashes for each line and try to find a matching song from a DATABASE*/
 
         //Use hash function here, for every single line
 
-    /* STEP 7: Success???? */
+    /* STEP 6: Success???? */
 
     return 0;
 }
