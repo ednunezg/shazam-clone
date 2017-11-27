@@ -1,0 +1,24 @@
+{
+  "files.associations": {
+    "*.js": "javascriptreact",
+    "*.handlebars": "html",
+    "*.cu": "c",
+    "cstdint": "cpp",
+    "iosfwd": "cpp",
+    "__locale": "cpp",
+    "ios": "cpp",
+    "iostream": "cpp",
+    "istream": "cpp",
+    "__config": "cpp",
+    "__nullptr": "cpp",
+    "exception": "cpp",
+    "initializer_list": "cpp",
+    "new": "cpp",
+    "stdexcept": "cpp",
+    "typeinfo": "cpp",
+    "iterator": "cpp",
+    "string": "cpp",
+    "string_view": "cpp",
+    "bitset": "cpp"
+  }
+}

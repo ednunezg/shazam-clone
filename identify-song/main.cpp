@@ -26,7 +26,7 @@ int main()
     
     // Print back the int array of audio samples (for debugging)
     
-    cout << "Printing array of ints";
+    cout << "Printing array of ints..." << endl;
 
     for(int i=0; i<outputSize; i++){
         cout << output[i] << endl;

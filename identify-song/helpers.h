@@ -2,8 +2,8 @@
 #define HELPERS_H_
 
 typedef struct{
-    int frequency;
-    int magnitude;
+    int imaginary;
+    int real;
 } Complex;
 
 void wavToInts(char * inputFilePath , int ** output, int * outputSampleRate, int * outputSize);

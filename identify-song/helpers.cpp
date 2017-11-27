@@ -9,8 +9,8 @@
 using namespace std;
 
 typedef struct{
-    int frequency;
-    int magnitude;
+    int imaginary;
+    int real;
 } Complex;
 
 /*
