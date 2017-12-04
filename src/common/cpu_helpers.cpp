@@ -133,8 +133,13 @@ int getBestMatchingSong(DB * database, char * frequencySetsFilePath){
   //Get best song from the histogram
 
   int best = -1;
+  int bestScore = 0;
+
   for(int i=0; i<database->numFiles; i++){
-    if(histogram[i] > best) best = histogram[i];
+    if(histogram[i] > bestScore){
+      best = i;
+      bestScore = histogram[i];
+    }
   }
 
   cout << "The audiofile " << database->filenames[best] << " was the BEST matching song! 🙌 ";
