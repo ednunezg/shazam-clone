@@ -17,12 +17,12 @@ Pre-requisites
 ---------------
 Intsall the lsndfile library. This is needed to read a .wav file into an array of integers
 
-Compile and run the identify-audio program ( a makefile would be nice kek )
+Compile and run the identify-audio program (a makefile would be nice...)
 ----------------------------------------------------------------------------
 g++ main.cpp -o identify-audio -lsndfile -std=c++11
 ./identify-audio [-cuda]
 
-Compile and run the footprint-audio program ( a makefile would be nice kek )
+Compile and run the footprint-audio program (a makefile would be nice...)
 ----------------------------------------------------------------------------
 g++ main.cpp -o footprint-audio -lsndfile -std=c++11
 ./identify-audio [-cuda]
