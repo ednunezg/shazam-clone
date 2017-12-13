@@ -23,9 +23,9 @@ typedef struct{
 #define FREQ_UPPERLIMIT = 300
 
 #define SAMPLE_RATE 22050      //Any audio file that is not 22.05 KHz will not be accepted in this program
-#define CHUNK_BYTES 8192 //We will only process 4 kb of audio for each FFT. This will contain 512 complex numbers
+#define CHUNK_BYTES 8192       //We will only process 8 kb of audio for each FFT. This will contain 1024 complex numbers
 #define CHUNK_SAMPLES  1024
-#define CHUNK_SECONDS 0.0464399093 //A float is 4 bytes. A chunk contains 1024 floats. 1024/22050 is the total time for each chunk
+#define CHUNK_SECONDS 0.0464399093 //A Complex type is 8 bytes. A chunk contains 1024 Complex numbers. 1024/22050 is the total time for each chunk
 
 
 
