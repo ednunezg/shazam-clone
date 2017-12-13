@@ -23,34 +23,26 @@ int main(int argc, char *argv[])
     cin.getline(inputFilePath, sizeof inputFilePath);
     cout << endl;
 
-    /* STEP 2: Get the int array of audio samples */
+    /* STEP 2: Get the array of audio samples. Each sample is saved into a Complex struct with imaginary component of 0 */
 
-    int * output;
-    int outputSize;
-    wavToInts(inputFilePath , &output, &outputSize);
-    
+    Complex * audio;
+    int audioSize, numChunks;
+    wavToComplex(inputFilePath , &audio, &audioSize);
+    numChunks = audioSize / CHUNK_SAMPLES;
+
     // Print back the int array of audio samples (for debugging)
-    cout << "Printing array of ints..." << endl;
-    for(int i=0; i<outputSize; i++){ cout << output[i] << endl; }
+    // for(int i=0; i<audioSize; i++){ cout << audio[i].re << endl; }
 
-    /* STEP 3: For each 4kb chunk of data in the audio int array, get a list of all frequencies and magnitudes */
+    /* STEP 3: Compute the hashes for every single chunk of 1024 samples */
 
-        //Use multipleAudioChunksToFFT function here
-    
-    /* STEP 4: Make a file containing the most prominent frequencies in globals.h:FREQ_RANGES for each audio chunk */
+    unsigned long * hashes;
+    audioToHashes(audio, numChunks, &hashes); //Our goal is to find the most prominent frequency between 40-80 Hz, 80-120 Hz, .. 180-300 Hz, and compute the hash for these 4 freqs
 
-        //We will write to a file where each line will contain the most prominent frequency in globals.h:FREQ_RANGES
-        //In this example, our goal is to find the most prominent frequency between 40-80 Hz, 80-120 Hz, .. 180-300 Hz
-        //We have to do this for EVERY SINGLE 4 KB chunk
+    /* STEP 4: Using the hashes we computed, we try to find a matching song from a DATABASE*/
 
-        //Use getAllHighestFrequencySets here
-
-    /* STEP 5: Using the file containing the most prominent frequencies in the range, we compute hashes for each line and try to find a matching song from a DATABASE*/
-        
     DB* database = new DB();
     database->initFromFile((char *) "../../database/HASHES.txt", (char *) "../../database/FILENAMES.txt");
-
-    int best = getBestMatchingSong( database, (char *) "FREQUENCY_SET_RESULTS.txt");
+    int best = getBestMatchingSong( database, numChunks, hashes);
 
     return 0;
 }

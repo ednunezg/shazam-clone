@@ -4,8 +4,8 @@
 
 //STRUCTS
 typedef struct{
-    int imaginary;
-    int real;
+    float im;
+    float re;
 } Complex;
 
 typedef struct{
@@ -13,19 +13,26 @@ typedef struct{
   unsigned int file_id;
 } DataPoint;
 
+//MATH
+
+#define PI_VAL  3.141592653589793
+
 //PROGRAM SETTINGS
+
+#define FREQ_LOWERLIMIT = 40
+#define FREQ_UPPERLIMIT = 300
+
 #define SAMPLE_RATE 22050      //Any audio file that is not 22.05 KHz will not be accepted in this program
+#define CHUNK_BYTES 8192 //We will only process 4 kb of audio for each FFT. This will contain 512 complex numbers
+#define CHUNK_SAMPLES  1024
+#define CHUNK_SECONDS 0.0464399093 //A float is 4 bytes. A chunk contains 1024 floats. 1024/22050 is the total time for each chunk
 
-#define SIZE_OF_FFT_CHUNK 4096 //We will only process 4 kb of audio for each FFT. This will contain 2048 ints
-#define SIZE_OF_FFT_CHUNK_SECONDS 0.09287981859 //An int is 2 bytes. A chunk contains 2048 ints. 2048/22050 is the total time for each chunk
-
-#define FREQ_LOWERLIMIT = 40;
-#define FREQ_UPPERLIMIT = 300;
-const int FREQ_RANGES[5] = { 40, 80, 120, 180, 300 };
 
 
 //CUDA SETTINGS
 #define BLOCK_SIZE 256
 
+
+const int FREQ_RANGES[5] = { 40, 80, 120, 180, 300 };
 
 #endif
