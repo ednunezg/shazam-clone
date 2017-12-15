@@ -19,12 +19,10 @@ Intsall the lsndfile library. This is needed to read a .wav file into an array o
 
 Compile and run the identify-audio program (a makefile would be nice...)
 ----------------------------------------------------------------------------
-g++ main.cpp ../common/audiodatabase.cpp ../common/cpu_helpers.cpp -o identify-audio -lsndfile -std=c++11
-
+make
 ./identify-audio [-cuda]
 
 Compile and run the footprint-audio program (a makefile would be nice...)
 ----------------------------------------------------------------------------
-g++ main.cpp ../common/audiodatabase.cpp ../common/cpu_helpers.cpp -o footprint-audio -lsndfile -std=c++11
-
+make
 ./footprint-audio [-cuda]
