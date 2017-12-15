@@ -1,10 +1,12 @@
 #include <iostream>
 #include <stdlib.h>
 #include <sndfile.h>
+#include <string.h>
 
+#include "../common/globals.h"
 #include "../common/gpu_helpers.cu"
-#include "../common/cpu_helpers.cpp"
-#include "../common/audiodatabase.cpp"
+#include "../common/cpu_helpers.h"
+#include "../common/audiodatabase.h"
 
 using namespace std;
 

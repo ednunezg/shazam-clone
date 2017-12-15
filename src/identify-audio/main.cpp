@@ -1,10 +1,13 @@
 #include <iostream>
 #include <stdlib.h>
 #include <sndfile.h>
+#include <string.h>
+
 
 #include "../common/globals.h"
-#include "../common/cpu_helpers.cpp"
-#include "../common/audiodatabase.cpp"
+#include "../common/gpu_helpers.cu"
+#include "../common/cpu_helpers.h"
+#include "../common/audiodatabase.h"
 
 using namespace std;
 
@@ -42,7 +45,7 @@ int main(int argc, char *argv[])
 
     DB* database = new DB();
     database->initFromFile((char *) "../../database/HASHES.txt", (char *) "../../database/FILENAMES.txt");
-    int best = getBestMatchingSong( database, numChunks, hashes);
+    database->getBestMatchingSong( numChunks, hashes);
 
     return 0;
 }

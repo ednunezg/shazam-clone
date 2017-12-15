@@ -6,13 +6,12 @@
 #include <math.h>
 
 #include "globals.h"
-#include "audiodatabase.cpp"
 
 using namespace std;
 
 
 /*
-    wavToInts
+    wavToComplex
     ==========
     Encodes a WAV file into an array of integers
 
@@ -151,44 +150,9 @@ void audioToHashes(Complex * input, int numChunks, unsigned long ** outputHashes
     
     cout << endl;
     cout << "Top frequencies= " << f1 << "," << f2 << "," << f3 << "," << f4 << endl;
-    cout << "Hash= " << (*outputHashes)[k] << endl;
+    cout << "Hash= " << std::hex << "0x" << (*outputHashes)[k] << std::dec << endl;
     cout << endl;
   }
 
   return;
 }
-
-
-int getBestMatchingSong(DB * database, int hashesSize, unsigned long * hashes){
-
-  //TODO: THIS IS A NAIVE IMPLEMENTATION FOR NOW... WE NEED TO ALSO CONSIDER TIME OFFSET
-  
-  //Compute histogram
-  int * histogram = new int[database->numFiles];  //Histogram of what files match each audio chunk
-  int curOffset = 0;
-
-  for(int i=0; i< hashesSize; i++){
-    unsigned long hash = hashes[i];
-    list<DataPoint> datapoints = database->hashmap[hash];
-    for(auto dp : datapoints){
-      histogram[dp.file_id]++;
-    }
-    curOffset++;
-  }
-
-  //Get best song from the histogram
-  int best = -1;
-  int bestScore = 0;
-
-  for(int i=0; i<database->numFiles; i++){
-    if(histogram[i] > bestScore){
-      best = i;
-      bestScore = histogram[i];
-    }
-  }
-
-  cout << "The audiofile " << database->filenames[best] << " was the BEST matching song! 🙌 ";
-
-  return best;
-}
-
