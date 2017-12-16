@@ -26,10 +26,10 @@ int main(int argc, char *argv[])
 
     /* STEP 2: Build the database */
     DB* database = new DB();
-    database->initFromScratch(inputDirPath);
+    database->initFromScratch(inputDirPath, CUDA_MODE);
 
     /* STEP 3: Serialize the database into text files */
-    database->serializeToFiles((char *) "HASHES.txt", (char *) "FILENAMES.txt");
+    database->serializeToFiles((char *) "../../database/HASHES.txt", (char *) "../../database/FILENAMES.txt");
 
     return 0;
 }

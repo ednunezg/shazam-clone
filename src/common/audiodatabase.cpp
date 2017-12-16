@@ -18,7 +18,7 @@ DB::DB(){
   numFiles = 0;
 }
 
-int DB::initFromScratch(char * folderPath){
+int DB::initFromScratch(char * folderPath, int cudaMode){
 
   /* Step 1: For all .wavs in this folder, assign a filename to each file ID */
 
@@ -33,7 +33,7 @@ int DB::initFromScratch(char * folderPath){
   while (pdir){
     string filename = pdir->d_name;
     if(filename.find(".wav") != string::npos){
-      filenames.push_back(pdir->d_name);
+      fileNames.push_back(pdir->d_name);
       i++;
     }
     pdir = readdir(dir);
@@ -42,22 +42,29 @@ int DB::initFromScratch(char * folderPath){
 
   /* Step 2: Compute hashes and their respective datapoints */
   
-  for(int i=0; i<filenames.size(); i++){
+  for(int i=0; i<fileNames.size(); i++){
     
     char* filepath;
-    filepath = (char *) malloc(strlen(folderPath)+strlen(filenames[i])+1); 
+    filepath = (char *) malloc(strlen(folderPath)+strlen(fileNames[i])+1); 
     strcpy(filepath, folderPath ); 
-    strcat(filepath, filenames[i]);
+    strcat(filepath, fileNames[i]);
 
 
     Complex * audio;
     int audioSize, numChunks;
     wavToComplex(filepath , &audio, &audioSize);
     numChunks = audioSize / CHUNK_SAMPLES;
-
     unsigned long * hashes;
-    audioToHashes(audio, numChunks, &hashes); //Our goal is to find the most prominent frequency between 40-80 Hz, 80-120 Hz, .. 180-300 Hz, and compute the hash for these 4 freqs
 
+    if(cudaMode == 0){
+      audioToHashes(audio, numChunks, &hashes);
+    }
+    else{
+      // audioToHashes_CUDA(audio, numChunks, &hashes);
+    }
+    
+
+    fileLengths.push_back(numChunks);
 
     for(int j=0; j<numChunks; j++){
 
@@ -86,12 +93,12 @@ int DB::initFromScratch(char * folderPath){
   @return - 0 for success, 1 for error
 */
 
-int DB::serializeToFiles(char * outputHashesFile, char * outputFilenamesFile){
+int DB::serializeToFiles(char * outputHashesFile, char * outputfileNamesFile){
   
-  fstream filenamesFile(outputFilenamesFile, ios_base::out);
+  fstream fileNamesFile(outputfileNamesFile, ios_base::out);
   
-  for(int i=0; i<filenames.size(); i++){
-    filenamesFile << i << " " << filenames[i] << endl;
+  for(int i=0; i<fileNames.size(); i++){
+    fileNamesFile << i << " " << fileNames[i] << " " << fileLengths[i] << " " << endl;
   }
 
   fstream hashFile(outputHashesFile, ios_base::out);
@@ -111,7 +118,7 @@ int DB::serializeToFiles(char * outputHashesFile, char * outputFilenamesFile){
   }
 
 
-  filenamesFile.close();
+  fileNamesFile.close();
   hashFile.close();
 
   return 0;
@@ -127,31 +134,33 @@ This is useful so we don't have to perform FFTs and determine frequencies
 from hours of audio all over again.
 
 @param - hashesFile: file containing serialized hashmap
-        - filenamesFile: file containing serialized fileIDs and filenames
+        - fileNamesFile: file containing serialized fileIDs and fileNames
 
 @return - 0 for success, 1 for error
 */
-int DB::initFromFile(char * hashesFile, char * filenamesFile){
+int DB::initFromFile(char * hashesFile, char * fileNamesFile){
 
-  //Step 1: Read in the filenames and assign file IDs
+  //Step 1: Read in the fileNames and assign file IDs
   
-  fstream fstreamFilenames(filenamesFile, ios_base::in);
-  if (!fstreamFilenames) {
-    cout << "Unable to open filenames file";
+  fstream fstreamfileNames(fileNamesFile, ios_base::in);
+  if (!fstreamfileNames) {
+    cout << "Unable to open fileNames file";
     exit(1); // terminate with error
   }
 
   int id;
+  int length;
   string fname;
 
-  while ( fstreamFilenames >> id >> fname ){
+  while ( fstreamfileNames >> id >> fname >> length ){
     char * fnameCstr = new char[fname.length() + 1];
     strcpy(fnameCstr, fname.c_str());
-    filenames.push_back(fnameCstr);
+    fileNames.push_back(fnameCstr);
+    fileLengths.push_back(length);
     numFiles++;
   }
 
-  fstreamFilenames.close();
+  fstreamfileNames.close();
 
   //Step 2: Read in the hash table
 
@@ -197,9 +206,9 @@ int DB::initFromFile(char * hashesFile, char * filenamesFile){
 }
 
 
-int DB::getBestMatchingSong(int numHashes, unsigned long * hashes){
+int DB::getBestMatchingSongNaive(int numHashes, unsigned long * hashes){
 
-  //TODO: THIS IS A NAIVE IMPLEMENTATION FOR NOW... WE NEED TO ALSO CONSIDER TIME OFFSET
+  //NOTE: THIS IS A NAIVE IMPLEMENTATION FOR NOW... FOR BETTER PERFORMANCE, CONSIDER OFFSET
   
   //Compute histogram
   int * histogram = (int *) malloc(numFiles * sizeof(int));  //Histogram of what files match each audio chunk
@@ -208,7 +217,7 @@ int DB::getBestMatchingSong(int numHashes, unsigned long * hashes){
 
   cout << "NUM HASHES = " << numHashes << endl;
 
-  for(int i=0; i< numHashes; i++){
+  for(int i=0; i<numHashes; i++){
     unsigned long hash = hashes[i];
     list<DataPoint> datapoints = hashmap[hash];
     for(auto dp : datapoints){
@@ -218,14 +227,14 @@ int DB::getBestMatchingSong(int numHashes, unsigned long * hashes){
   }
 
   //Get best song from the histogram
-  int best = -1;
+  int best = 0;
   int bestScore = 0;
 
   cout << "---HISTOGRAM RESULTS---" << endl;
 
   for(int i=0; i<numFiles; i++){
 
-    cout << "FILE ID " << i << " HAS SCORE OF " << histogram[i] << endl;
+    cout << "FILE ID " << i << " HAS SCORE OF " << histogram[i] << " ( " << fileNames[i] << " ) " <<endl;
 
     if(histogram[i] > bestScore){
       best = i;
@@ -233,7 +242,54 @@ int DB::getBestMatchingSong(int numHashes, unsigned long * hashes){
     }
   }
 
-  cout << "The audiofile " << filenames[best] << " was the BEST matching song! 🙌 ";
+  cout << "The audiofile " << fileNames[best] << " was the BEST matching song!";
+
+  return best;
+}
+
+int DB::getBestMatchingSong(int numHashes, unsigned long * hashes){
+
+  int biggestFileLength = 0;
+  for(int i=0; i<fileLengths.size(); i++) if(fileLengths[i] > biggestFileLength) biggestFileLength = fileLengths[i];
+  
+  //Compute histogram
+
+  int * histogram = (int *) malloc(numFiles * sizeof(int));  //Histogram of what files match each audio chunk
+  memset(histogram, 0, numFiles * sizeof(int));
+
+  int offsetHistory[numFiles][biggestFileLength]; //Keeps track of at what point in time did we last see the hashes
+  memset(offsetHistory, -1, sizeof(offsetHistory[0][0]) * numFiles * biggestFileLength);
+
+  for(int t=0; t<numHashes; t++){
+
+    bool histogramCandidates[numFiles]; //Histogram candidates for this iteration
+    memset(histogramCandidates, false, sizeof(bool)*numFiles);
+
+    unsigned long hash = hashes[t];
+    list<DataPoint> datapoints = hashmap[hash];
+
+    for(auto dp : datapoints){
+      if(dp.time > 0 && offsetHistory[dp.file_id][dp.time-1] == (t-1)){ 
+        histogramCandidates[dp.file_id] = true; //We found a candidate
+      }
+      offsetHistory[dp.file_id][dp.time] = t;
+    }
+
+    for(int i=0; i<numFiles; i++) if(histogramCandidates[i] == true) histogram[i]++;
+  }
+
+  //Get best song from the histogram
+  int best = 0;
+  int bestScore = 0;
+  cout << endl << "---HISTOGRAM RESULTS---" << endl;
+  for(int i=0; i<numFiles; i++){
+    cout << "FILE ID " << i << " HAS SCORE OF " << histogram[i] << " ( " << fileNames[i] << " ) " <<endl;
+    if(histogram[i] > bestScore){
+      best = i;
+      bestScore = histogram[i];
+    }
+  }
+  cout << endl << "The audiofile " << fileNames[best] << " was the BEST matching song! ";
 
   return best;
 }

@@ -1,10 +1,10 @@
-0 1999-Prince.wav
-1 Bag_Raiders-Shooting_Stars.wav
-2 Beck-Colors.wav
-3 Beethoven-Moonlight_Sonata.wav
-4 Bjork-Joga.wav
-5 Darude-Sandstorm.wav
-6 Daydreaming-Radiohead.wav
-7 Pearl_Jam-Jeremy.wav
-8 Smash_Mouth-All_Star.wav
-9 The_Cure-Just_Like_Heaven.wav
+0 1999-Prince.wav 4046 
+1 Bag_Raiders-Shooting_Stars.wav 2352 
+2 Beck-Colors.wav 2818 
+3 Beethoven-Moonlight_Sonata.wav 4226 
+4 Bjork-Joga.wav 3287 
+5 Darude-Sandstorm.wav 2435 
+6 Daydreaming-Radiohead.wav 4139 
+7 Pearl_Jam-Jeremy.wav 3436 
+8 Smash_Mouth-All_Star.wav 2159 
+9 The_Cure-Just_Like_Heaven.wav 2305 

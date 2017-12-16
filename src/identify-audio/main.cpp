@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     /* STEP 1: Request the name of the input file */
 
     char inputFilePath[100];
-    cout << "Enter the name of audio file you want to identify. It needs to be in same directory as this program: ";
+    cout << "Enter the path of the audio file you want to identify: ";
     cin.getline(inputFilePath, sizeof inputFilePath);
     cout << endl;
 
@@ -39,8 +39,12 @@ int main(int argc, char *argv[])
     /* STEP 3: Compute the hashes for every single chunk of 1024 samples */
 
     unsigned long * hashes;
-    audioToHashes(audio, numChunks, &hashes); //Our goal is to find the most prominent frequency between 40-80 Hz, 80-120 Hz, .. 180-300 Hz, and compute the hash for these 4 freqs
-
+    if(CUDA_MODE==0){
+        audioToHashes(audio, numChunks, &hashes);
+    } 
+    else{
+        // audioToHashes_CUDA(audio, numChunks, &hashes);
+    }
     /* STEP 4: Using the hashes we computed, we try to find a matching song from a DATABASE*/
 
     DB* database = new DB();

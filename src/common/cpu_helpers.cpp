@@ -105,8 +105,15 @@ void FFT(Complex * v, int n, Complex *tmp){ // FROM https://www.math.wustl.edu/~
 }
 
 unsigned long computeHash(int f1, int f2, int f3, int f4){
-  const int FUZ_FACTOR = 2;
-  return  (f4-(f4%FUZ_FACTOR)) * 100000000 + (f3-(f3%FUZ_FACTOR)) * 100000 + (f2-(f2%FUZ_FACTOR)) * 100 + (f1-(f1%FUZ_FACTOR));
+  const unsigned long FUZ_FACTOR = 3;
+
+  if((f1 == -1 || f2==-1) || (f3==-1 || f4==-1)) return 0; //We return zero as the value of a hash in case of a silence
+  unsigned long result = 0;
+  result += (unsigned long) ((f4-(f4%FUZ_FACTOR)) * 100000000);
+  result += (unsigned long) ((f3-(f3%FUZ_FACTOR)) * 100000);
+  result += (unsigned long) ((f2-(f2%FUZ_FACTOR)) * 100);
+  result += (unsigned long) (f1-(f1%FUZ_FACTOR));
+  return result;
 }
 
 void audioToHashes(Complex * input, int numChunks, unsigned long ** outputHashes){ //All input elements have 0 for the im component
@@ -116,7 +123,7 @@ void audioToHashes(Complex * input, int numChunks, unsigned long ** outputHashes
 
   for(int k=0; k<numChunks; k++){
 
-    cout << "--- PROCESSING CHUNK # " << k <<  " ---" << endl;
+    cout << "--- PROCESSING CHUNK # " << k <<  " --- " << "( " << CHUNK_SECONDS*k << " s ) " << endl;
     
 
     //STEP 1: FFT of audio
@@ -127,12 +134,16 @@ void audioToHashes(Complex * input, int numChunks, unsigned long ** outputHashes
 
     //STEP 2: Compute the most prominent frequencies for each of the 4 frequency ranges
     
-    int firstBin = 0;
-    int lastBin = 30;
-    // int firstBin = ( FREQ_LOWERLIMIT / (float) (1/CHUNK_SECONDS));
-    // int lastBin = ( FREQ_UPPERLIMIT / (float) (1/CHUNK_SECONDS));
+    // int firstBin = 0;
+    // int lastBin = 120;
+
+    int firstBin = (CHUNK_SECONDS * FREQ_LOWERLIMIT)-2;
+    int lastBin = (CHUNK_SECONDS  * FREQ_UPPERLIMIT)+2;
     int f1, f2, f3, f4;
     float f1val, f2val, f3val, f4val;
+
+    f1 = -1; f2 = -1; f3 = -1 ; f4 = -1;
+    f1val = 0; f2val = 0; f3val = 0 ; f4val = 0;
 
     for(int i=firstBin; i<lastBin; i++){
       int binFreq =  ((float) SAMPLE_RATE / (float) CHUNK_SAMPLES) * i;

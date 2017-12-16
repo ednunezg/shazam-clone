@@ -17,12 +17,20 @@ Pre-requisites
 ---------------
 Intsall the lsndfile library. This is needed to read a .wav file into an array of integers
 
-Compile and run the identify-audio program (a makefile would be nice...)
+Compile and run the identify-audio program
 ----------------------------------------------------------------------------
+```
 make
 ./identify-audio [-cuda]
+```
+When it prompts you for an audio file, enter: "test/bjork.wav" or any other audio you want to identify.
+
 
 Compile and run the footprint-audio program (a makefile would be nice...)
 ----------------------------------------------------------------------------
+```
 make
 ./footprint-audio [-cuda]
+```
+
+When it prompts you for the path of a music library, enter: "../../music-wav/"
