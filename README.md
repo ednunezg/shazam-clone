@@ -12,7 +12,7 @@ A shazam clone is made up of two programs:
 * Intsall the lsndfile library. This is needed to read a .wav file into an array of integers
 
 * All wav files you use for this project must have:
-  - Sample rate of 22050 KHz
+  - Sample rate of 22.05 KHz
   - Mono channel
 
 ### Compile and run the identify-audio program
