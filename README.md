@@ -1,4 +1,4 @@
-SHAZAM CLONE
+Shazam clone
 =================
 
 A shazam clone needs is made up of two programs:
