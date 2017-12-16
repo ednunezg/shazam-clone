@@ -18,7 +18,7 @@ class DB{
   public:
     DB();
 
-    int initFromScratch(char * folderPath);
+    int initFromScratch(char * folderPath, int cudaMode);
 
     int serializeToFiles(char * outputHashesFile, char * outputFilenamesFile);
 
