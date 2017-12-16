@@ -3,9 +3,9 @@ Shazam clone
 
 A shazam clone is made up of two programs:
 
-**footprint-songs**: This program takes a folder directory containing several WAV files as an input, and stores a serialized database that can be used for later identifying any piece of audio using a FFT + frequency hashing technique. 
+**footprint-audio**: This program takes a folder directory containing several WAV files as an input, and stores a serialized database that can be used for later identifying any piece of audio using a FFT + frequency hashing technique. 
 
-**identify-song**: This takes a WAV file as an input, and then matches the song with a list of songs in a database.
+**identify-audio**: This takes a WAV file as an input, and then matches the song with a list of songs in a database.
 
 ### Pre-requisites
 
