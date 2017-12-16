@@ -208,7 +208,7 @@ int DB::initFromFile(char * hashesFile, char * fileNamesFile){
 
 int DB::getBestMatchingSongNaive(int numHashes, unsigned long * hashes){
 
-  //NOTE: THIS IS A NAIVE IMPLEMENTATION FOR NOW... FOR BETTER PERFORMANCE, CONSIDER OFFSET
+  //NOTE: THIS IS A NAIVE IMPLEMENTATION... FOR BETTER ACCURACY, CONSIDER OFFSET
   
   //Compute histogram
   int * histogram = (int *) malloc(numFiles * sizeof(int));  //Histogram of what files match each audio chunk
