@@ -10,6 +10,7 @@
 #include "../common/globals.h"
 #include "../common/audiodatabase.h"
 #include "../common/cpu_helpers.h"
+#include "../common/gpu_helpers.h"
 
 using namespace std;
 
@@ -290,7 +291,7 @@ int DB::getBestMatchingSong(int numHashes, unsigned long * hashes){
       bestScore = histogram[i];
     }
   }
-  cout << endl << "The audiofile " << fileNames[best] << " was the BEST matching song! ";
+  cout << endl << "The audiofile " << fileNames[best] << " was the BEST matching song! " << endl << endl;
 
 
   return best;

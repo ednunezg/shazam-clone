@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "../common/globals.h"
-// #include "../common/gpu_helpers.cu"
+// #include "../common/gpu_helpers.h"
 #include "../common/cpu_helpers.h"
 #include "../common/audiodatabase.h"
 

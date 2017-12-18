@@ -5,6 +5,8 @@
 #include <math.h>
 #include "AudioFile.h"
 #include "globals.h"
+#include "cpu_helpers.h"
+
 
 using namespace std;
 
@@ -106,9 +108,6 @@ void audioToHashes(Complex * input, int numChunks, unsigned long ** outputHashes
 
     //STEP 2: Compute the most prominent frequencies for each of the 4 frequency ranges
     
-    // int firstBin = 0;
-    // int lastBin = 120;
-
     int firstBin = (CHUNK_SECONDS * FREQ_LOWERLIMIT)-2;
     int lastBin = (CHUNK_SECONDS  * FREQ_UPPERLIMIT)+2;
     int f1, f2, f3, f4;
