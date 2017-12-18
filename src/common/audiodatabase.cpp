@@ -1,3 +1,4 @@
+#include <string.h>
 #include <stdlib.h>
 #include <dirent.h>
 #include <iostream>
@@ -254,7 +255,7 @@ int DB::getBestMatchingSong(int numHashes, unsigned long * hashes){
   
   //Compute histogram
 
-  int * histogram = (int *) malloc(numFiles * sizeof(int));  //Histogram of what files match each audio chunk
+  int histogram[numFiles];  //Histogram of what files match each audio chunk
   memset(histogram, 0, numFiles * sizeof(int));
 
   int offsetHistory[numFiles][biggestFileLength]; //Keeps track of at what point in time did we last see the hashes
@@ -290,6 +291,7 @@ int DB::getBestMatchingSong(int numHashes, unsigned long * hashes){
     }
   }
   cout << endl << "The audiofile " << fileNames[best] << " was the BEST matching song! ";
+
 
   return best;
 }

@@ -2,9 +2,8 @@
 
 #include <iostream>
 #include <stdlib.h>
-#include <sndfile.h>
 #include <math.h>
-
+#include "AudioFile.h"
 #include "globals.h"
 
 using namespace std;
@@ -22,60 +21,33 @@ using namespace std;
 */
 
 void wavToComplex(char * inputFilePath , Complex ** output, int * outputSize){
-  SNDFILE *sf;
-  SF_INFO info;
-  int num_channels;
-  int num, num_items;
-  float *buf;
-  int f,sr,c;
-  FILE *out;
   
-  /* Open the WAV file. */
-  info.format = 0;
-  sf = sf_open(inputFilePath, SFM_READ,&info);
-  if (sf == NULL)
-  {
-    printf("Failed to open the file.\n");
-    exit(-1);
-  }
-      
-  /* Print some of the info, and figure out how much data to read. */
 
-  f = info.frames;
-  sr = info.samplerate;
-  c = info.channels;
-  cout << "Reading " << inputFilePath << ":" << endl;
-  cout << "frames=" << f << endl;
-  cout << "samplerate=" << sr << endl;
-  cout << "channels=" << c << endl;
-  num_items = f*c;
-  cout << "num_items=" << num_items << endl << endl;
+  /* Open the audio file */
+  AudioFile<float> audioFile;
+  audioFile.load (inputFilePath);
 
-  if(sr != SAMPLE_RATE){
+  /* Check if the settings are correct */
+  bool isMono = audioFile.isMono();
+  int sampleRate = audioFile.getSampleRate();
+
+  if(sampleRate != 22050){
     cout << "ERROR: " << endl;
     cout << "The only sample rate supported for this program is 22.05 KHz." << endl;
     cout << "Please downsample / upsample '" << inputFilePath << "' to 22.05 KHz." << endl;
     exit(-1);
   }
-  
-  /* Allocate space for the data to be read in a buffer, then read it. */
-  /* TODO: Find a way to optimize this so we only read one channel */
-  buf = (float *) malloc(num_items*sizeof(float));
-  num = sf_read_float(sf,buf,num_items);
-  sf_close(sf);
-  printf("Read %d items\n",num);
-  
-  /* Write the data from the very first channel of buffer to the output array */
-  *output = (Complex *) malloc( sizeof(Complex) * f);
 
-  int j=0;
-  for (int i = 0; i < num; i += c) {
-    (*output)[j].re = buf[i];
-    (*output)[j].im = 0;
-    j++;
+  /* Write the data to the output array output array */
+  int numSamples = audioFile.getNumSamplesPerChannel();
+  int channel = 0;
+  *output = (Complex *) malloc( sizeof(Complex) * numSamples);
+
+  for (int i = 0; i < numSamples; i++) {
+    (*output)[i].re = audioFile.samples[channel][i];
+    (*output)[i].im = 0;
   }
-  *outputSize = f;
-  free(buf);
+  *outputSize = numSamples;
   return;
 }
 
