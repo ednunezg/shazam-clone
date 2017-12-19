@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
         audioToHashes(audio, numChunks, &hashes);
     } 
     else{
-        // audioToHashes_CUDA(audio, numChunks, &hashes);
+        audioToHashes_CUDA(audio, numChunks, &hashes);
     }
     /* STEP 4: Using the hashes we computed, we try to find a matching song from a DATABASE*/
 

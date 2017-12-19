@@ -62,7 +62,7 @@ int DB::initFromScratch(char * folderPath, int cudaMode){
       audioToHashes(audio, numChunks, &hashes);
     }
     else{
-      // audioToHashes_CUDA(audio, numChunks, &hashes);
+      audioToHashes_CUDA(audio, numChunks, &hashes);
     }
     
 

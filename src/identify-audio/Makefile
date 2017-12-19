@@ -2,7 +2,7 @@ NVCC        = nvcc
 CC          = g++
 
 
-NVCC_FLAGS  = -I/usr/local/cuda/include -gencode=arch=compute_60,code=\"sm_60\"
+NVCC_FLAGS  = -I/usr/local/cuda/include -gencode=arch=compute_60,code=\"sm_60\" -lcuda -lcudart -lcufft
 CC_FLAGS    = -std=c++11
 
 

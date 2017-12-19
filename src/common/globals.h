@@ -4,8 +4,8 @@
 
 //STRUCTS
 typedef struct{
-    float im;
     float re;
+    float im;
 } Complex;
 
 typedef struct{
